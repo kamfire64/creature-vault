@@ -5,6 +5,7 @@ import { User, Coins, Swords, Award, Flame, Droplets, Leaf, Zap, Mountain, Moon,
 import { Skeleton } from "@/components/ui/skeleton";
 import { PixelCreature } from "@/components/pixel-creature";
 import { cn } from "@/lib/utils";
+import { normalizeCreatureList } from "@/lib/normalize-creature-list";
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
   Fire: Flame, Water: Droplets, Nature: Leaf, Electric: Zap,
@@ -22,11 +23,14 @@ const TYPE_TEXT: Record<string, string> = {
 export default function ProfilePage() {
   const { data: user, isLoading: userLoading } = useGetMe();
   const { data: stats, isLoading: statsLoading } = useGetInventoryStats();
-  const { data: creatures } = useGetInventory();
+  const { data: inventoryData } = useGetInventory();
+  const creatures = useMemo(
+    () => normalizeCreatureList(inventoryData),
+    [inventoryData],
+  );
 
   // Compute type distribution from inventory
   const typeBreakdown = useMemo(() => {
-    if (!creatures) return {};
     const counts: Record<string, number> = {};
     for (const c of creatures) {
       counts[c.type] = (counts[c.type] ?? 0) + 1;
@@ -75,7 +79,7 @@ export default function ProfilePage() {
               "bg-card p-4 rounded-2xl border flex items-center gap-4",
               `border-${stats.strongestCreature.rarity?.toLowerCase()}/30`
             )}>
-              {creatures && (() => {
+              {(() => {
                 const sc = creatures.find(c => c.name === stats.strongestCreature?.name);
                 return sc ? (
                   <div className={cn(

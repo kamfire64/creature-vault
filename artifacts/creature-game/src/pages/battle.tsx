@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Layout } from "@/components/layout";
 import { CreatureCard } from "@/components/creature-card";
 import {
@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Swords, Info, Shield, Sparkles, RefreshCw, X, Star, Flame } from "lucide-react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
+import { normalizeCreatureList } from "@/lib/normalize-creature-list";
 import { PixelCreature } from "@/components/pixel-creature";
 import { useBattleEngine, TYPE_ADVANTAGES, TYPE_COLORS, ULTIMATE_NAMES, type StatusState, type CreatureType } from "@/hooks/use-battle-engine";
 
@@ -27,7 +28,11 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function BattlePage() {
-  const { data: creatures, isLoading } = useGetInventory();
+  const { data: inventoryData, isLoading } = useGetInventory();
+  const creatures = useMemo(
+    () => normalizeCreatureList(inventoryData),
+    [inventoryData],
+  );
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const setupBattle = useSetupBattle();
   const completeBattle = useCompleteBattle();
@@ -81,7 +86,10 @@ export default function BattlePage() {
     }
   }, [state.result, state.phase]);
 
-  const availableCreatures = creatures?.filter(c => !c.listedForSale) || [];
+  const availableCreatures = useMemo(
+    () => creatures.filter((c) => !c.listedForSale),
+    [creatures],
+  );
 
   // ─── RESULT SCREEN ───────────────────────────────────────────────────────────
   if (state.phase === "result" && state.result && completeBattle.isSuccess) {

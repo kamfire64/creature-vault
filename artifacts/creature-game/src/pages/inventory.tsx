@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { PixelCreature } from "@/components/pixel-creature";
 import { cn } from "@/lib/utils";
+import { normalizeCreatureList } from "@/lib/normalize-creature-list";
 
 const TYPES = ["Fire", "Water", "Nature", "Electric", "Stone", "Shadow", "Light"] as const;
 const RARITIES = ["Common", "Rare", "Epic", "Legendary"] as const;
@@ -40,7 +41,11 @@ const TYPE_COLORS: Record<string, string> = {
 type SortKey = "power-desc" | "power-asc" | "name-asc" | "xp-desc";
 
 export default function InventoryPage() {
-  const { data: creatures, isLoading } = useGetInventory();
+  const { data: inventoryData, isLoading } = useGetInventory();
+  const creatures = useMemo(
+    () => normalizeCreatureList(inventoryData),
+    [inventoryData],
+  );
   const { data: stats } = useGetInventoryStats();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [sellPrice, setSellPrice] = useState("");
@@ -59,7 +64,7 @@ export default function InventoryPage() {
   const sortKeys: SortKey[] = ["power-desc", "power-asc", "name-asc", "xp-desc"];
 
   const filtered = useMemo(() => {
-    let result = creatures ? [...creatures] : [];
+    let result = [...creatures];
     if (filterType) result = result.filter((c) => c.type === filterType);
     if (filterRarity) result = result.filter((c) => c.rarity === filterRarity);
     result.sort((a, b) => {
@@ -72,7 +77,7 @@ export default function InventoryPage() {
     return result;
   }, [creatures, filterType, filterRarity, sort]);
 
-  const selectedCreature = creatures?.find((c) => c.id === selectedId);
+  const selectedCreature = creatures.find((c) => c.id === selectedId);
 
   const handleSell = () => {
     if (!selectedId || !sellPrice) return;
@@ -112,10 +117,10 @@ export default function InventoryPage() {
               </div>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              <StatBadge label="C" count={stats.byRarity.Common} color="common" />
-              <StatBadge label="R" count={stats.byRarity.Rare} color="rare" />
-              <StatBadge label="E" count={stats.byRarity.Epic} color="epic" />
-              <StatBadge label="L" count={stats.byRarity.Legendary} color="legendary" />
+            <StatBadge label="C" count={stats.byRarity?.Common ?? 0} color="common" />
+            <StatBadge label="R" count={stats.byRarity?.Rare ?? 0} color="rare" />
+            <StatBadge label="E" count={stats.byRarity?.Epic ?? 0} color="epic" />
+            <StatBadge label="L" count={stats.byRarity?.Legendary ?? 0} color="legendary" />
             </div>
           </div>
         )}
@@ -190,7 +195,7 @@ export default function InventoryPage() {
           <div className="grid grid-cols-2 gap-4">
             {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-[3/4] rounded-xl" />)}
           </div>
-        ) : creatures?.length === 0 ? (
+        ) : creatures.length === 0 ? (
           <div className="text-center py-12 px-4 border border-dashed border-white/10 rounded-2xl bg-card/50">
             <ShieldAlert className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
             <h3 className="font-bold text-lg mb-1">Collection Empty</h3>
