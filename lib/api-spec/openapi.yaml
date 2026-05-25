@@ -1,0 +1,609 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Creature Collection Game API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: users
+    description: User account operations
+  - name: creatures
+    description: Creature operations
+  - name: packs
+    description: Pack opening operations
+  - name: marketplace
+    description: Marketplace operations
+  - name: battles
+    description: Battle operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /users/me:
+    get:
+      operationId: getMe
+      tags: [users]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /creatures:
+    get:
+      operationId: listCreatures
+      tags: [creatures]
+      summary: List all creature templates
+      responses:
+        "200":
+          description: List of creatures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Creature"
+
+  /creatures/inventory:
+    get:
+      operationId: getInventory
+      tags: [creatures]
+      summary: Get user inventory
+      responses:
+        "200":
+          description: User inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OwnedCreature"
+
+  /creatures/inventory/stats:
+    get:
+      operationId: getInventoryStats
+      tags: [creatures]
+      summary: Inventory stats summary
+      responses:
+        "200":
+          description: Inventory stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryStats"
+
+  /packs/open:
+    post:
+      operationId: openPack
+      tags: [packs]
+      summary: Open a pack to receive creatures
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PackInput"
+      responses:
+        "200":
+          description: Pack opened
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackResult"
+        "400":
+          description: Not enough coins
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /marketplace:
+    get:
+      operationId: listMarketplace
+      tags: [marketplace]
+      summary: List all active marketplace listings
+      responses:
+        "200":
+          description: Active listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+    post:
+      operationId: createListing
+      tags: [marketplace]
+      summary: List a creature for sale
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingInput"
+      responses:
+        "201":
+          description: Listing created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /marketplace/{listingId}:
+    delete:
+      operationId: cancelListing
+      tags: [marketplace]
+      summary: Cancel a marketplace listing
+      parameters:
+        - name: listingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Listing cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /battles/setup:
+    post:
+      operationId: setupBattle
+      tags: [battles]
+      summary: Setup a battle — returns both teams with types and skills for client-side play
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BattleInput"
+      responses:
+        "200":
+          description: Battle setup data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BattleSetup"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /battles/complete:
+    post:
+      operationId: completeBattle
+      tags: [battles]
+      summary: Complete a battle — record outcome and grant rewards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BattleCompleteInput"
+      responses:
+        "200":
+          description: Reward result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BattleCompleteResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /battles/start:
+    post:
+      operationId: startBattle
+      tags: [battles]
+      summary: Deprecated — use /battles/setup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BattleInput"
+      responses:
+        "200":
+          description: Battle result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BattleResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /marketplace/{listingId}/buy:
+    post:
+      operationId: buyListing
+      tags: [marketplace]
+      summary: Purchase a creature from the marketplace
+      parameters:
+        - name: listingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Purchase successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuyResult"
+        "400":
+          description: Not enough coins or invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    User:
+      type: object
+      required: [id, username, coins]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        coins:
+          type: integer
+
+    Creature:
+      type: object
+      required: [id, name, rarity, type, attack, defense, speed, health, powerScore, imageUrl]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rarity:
+          type: string
+          enum: [Common, Rare, Epic, Legendary]
+        type:
+          type: string
+          enum: [Fire, Water, Nature, Shadow, Light, Electric, Stone]
+        attack:
+          type: integer
+        defense:
+          type: integer
+        speed:
+          type: integer
+        health:
+          type: integer
+        powerScore:
+          type: integer
+        imageUrl:
+          type: string
+
+    OwnedCreature:
+      type: object
+      required: [id, creatureId, name, rarity, type, attack, defense, speed, health, powerScore, imageUrl, acquiredAt, listedForSale, xp]
+      properties:
+        id:
+          type: integer
+        creatureId:
+          type: integer
+        name:
+          type: string
+        rarity:
+          type: string
+          enum: [Common, Rare, Epic, Legendary]
+        type:
+          type: string
+          enum: [Fire, Water, Nature, Shadow, Light, Electric, Stone]
+        attack:
+          type: integer
+        defense:
+          type: integer
+        speed:
+          type: integer
+        health:
+          type: integer
+        powerScore:
+          type: integer
+        imageUrl:
+          type: string
+        acquiredAt:
+          type: string
+        listedForSale:
+          type: boolean
+        xp:
+          type: integer
+
+    InventoryStats:
+      type: object
+      required: [total, byRarity, totalPower, strongestCreature]
+      properties:
+        total:
+          type: integer
+        byRarity:
+          type: object
+          required: [Common, Rare, Epic, Legendary]
+          properties:
+            Common:
+              type: integer
+            Rare:
+              type: integer
+            Epic:
+              type: integer
+            Legendary:
+              type: integer
+        totalPower:
+          type: integer
+        strongestCreature:
+          type: ["object", "null"]
+          properties:
+            name:
+              type: string
+            powerScore:
+              type: integer
+            rarity:
+              type: string
+
+    PackInput:
+      type: object
+      required: [packType]
+      properties:
+        packType:
+          type: string
+          enum: [basic, premium, legendary]
+
+    PackResult:
+      type: object
+      required: [creaturesReceived, coinsSpent, coinsRemaining]
+      properties:
+        creaturesReceived:
+          type: array
+          items:
+            $ref: "#/components/schemas/OwnedCreature"
+        coinsSpent:
+          type: integer
+        coinsRemaining:
+          type: integer
+
+    ListingInput:
+      type: object
+      required: [ownedCreatureId, price]
+      properties:
+        ownedCreatureId:
+          type: integer
+        price:
+          type: integer
+
+    Listing:
+      type: object
+      required: [id, price, sellerUsername, createdAt, creature]
+      properties:
+        id:
+          type: integer
+        price:
+          type: integer
+        sellerUsername:
+          type: string
+        createdAt:
+          type: string
+        creature:
+          $ref: "#/components/schemas/OwnedCreature"
+
+    BuyResult:
+      type: object
+      required: [creature, coinsSpent, coinsRemaining]
+      properties:
+        creature:
+          $ref: "#/components/schemas/OwnedCreature"
+        coinsSpent:
+          type: integer
+        coinsRemaining:
+          type: integer
+
+    BattleInput:
+      type: object
+      required: [creatureIds]
+      properties:
+        creatureIds:
+          type: array
+          items:
+            type: integer
+          minItems: 3
+          maxItems: 3
+
+    BattleCreatureSummary:
+      type: object
+      required: [id, name, rarity, type, attack, defense, speed, health, powerScore]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rarity:
+          type: string
+          enum: [Common, Rare, Epic, Legendary]
+        type:
+          type: string
+          enum: [Fire, Water, Nature, Shadow, Light, Electric, Stone]
+        attack:
+          type: integer
+        defense:
+          type: integer
+        speed:
+          type: integer
+        health:
+          type: integer
+        powerScore:
+          type: integer
+
+    BattleFighter:
+      type: object
+      required: [id, name, rarity, type, attack, defense, speed, health, powerScore, skillName, skillDescription]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        rarity:
+          type: string
+          enum: [Common, Rare, Epic, Legendary]
+        type:
+          type: string
+          enum: [Fire, Water, Nature, Shadow, Light, Electric, Stone]
+        attack:
+          type: integer
+        defense:
+          type: integer
+        speed:
+          type: integer
+        health:
+          type: integer
+        powerScore:
+          type: integer
+        skillName:
+          type: string
+        skillDescription:
+          type: string
+
+    BattleSetup:
+      type: object
+      required: [playerTeam, opponentTeam, typeAdvantages]
+      properties:
+        playerTeam:
+          type: array
+          items:
+            $ref: "#/components/schemas/BattleFighter"
+        opponentTeam:
+          type: array
+          items:
+            $ref: "#/components/schemas/BattleFighter"
+        typeAdvantages:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    BattleCompleteInput:
+      type: object
+      required: [outcome, survivingPlayerCreatureIds]
+      properties:
+        outcome:
+          type: string
+          enum: [win, lose]
+        survivingPlayerCreatureIds:
+          type: array
+          items:
+            type: integer
+        turnsElapsed:
+          type: integer
+          description: Number of full turns the battle lasted
+        enemiesDefeated:
+          type: integer
+          description: Number of enemy creatures knocked out
+
+    BattleCompleteResult:
+      type: object
+      required: [coinsEarned, xpGained, coinsRemaining]
+      properties:
+        coinsEarned:
+          type: integer
+        xpGained:
+          type: integer
+        coinsRemaining:
+          type: integer
+
+    BattleLogEntry:
+      type: object
+      required: [turn, message, type]
+      properties:
+        turn:
+          type: integer
+        message:
+          type: string
+        type:
+          type: string
+          enum: [attack, ko, info]
+
+    BattleResult:
+      type: object
+      required: [outcome, coinsEarned, logEntries, playerTeam, opponentTeam]
+      properties:
+        outcome:
+          type: string
+          enum: [win, lose]
+        coinsEarned:
+          type: integer
+        logEntries:
+          type: array
+          items:
+            $ref: "#/components/schemas/BattleLogEntry"
+        playerTeam:
+          type: array
+          items:
+            $ref: "#/components/schemas/BattleCreatureSummary"
+        opponentTeam:
+          type: array
+          items:
+            $ref: "#/components/schemas/BattleCreatureSummary"

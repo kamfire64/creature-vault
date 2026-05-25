@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --font-sans: var(--app-font-sans);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 240 10% 4%;
+  --foreground: 210 40% 98%;
+
+  --card: 240 10% 8%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 240 10% 16%;
+
+  --popover: 240 10% 6%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 240 10% 12%;
+
+  --primary: 270 70% 60%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 240 10% 12%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 240 10% 12%;
+  --muted-foreground: 240 5% 65%;
+
+  --accent: 270 70% 60%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 240 10% 16%;
+  --input: 240 10% 16%;
+  --ring: 270 70% 60%;
+
+  --radius: 0.75rem;
+  --app-font-sans: 'Outfit', sans-serif;
+  --app-font-mono: 'Space Mono', monospace;
+
+  /* Rarity Colors */
+  --rarity-common: 220 10% 60%;
+  --rarity-rare: 210 100% 60%;
+  --rarity-epic: 270 70% 60%;
+  --rarity-legendary: 40 100% 55%;
+}
+
+.dark {
+  --background: 240 10% 4%;
+  --foreground: 210 40% 98%;
+  --card: 240 10% 8%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 240 10% 16%;
+  --popover: 240 10% 6%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 240 10% 12%;
+  --primary: 270 70% 60%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 240 10% 12%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 240 10% 12%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 270 70% 60%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 240 10% 16%;
+  --input: 240 10% 16%;
+  --ring: 270 70% 60%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+.bg-common { background: linear-gradient(135deg, hsl(var(--rarity-common)), #444); }
+.bg-rare { background: linear-gradient(135deg, hsl(var(--rarity-rare)), #113377); }
+.bg-epic { background: linear-gradient(135deg, hsl(var(--rarity-epic)), #440077); }
+.bg-legendary { background: linear-gradient(135deg, hsl(var(--rarity-legendary)), #883300); }
+
+.border-common { border-color: hsl(var(--rarity-common) / 0.5); }
+.border-rare { border-color: hsl(var(--rarity-rare) / 0.5); }
+.border-epic { border-color: hsl(var(--rarity-epic) / 0.5); }
+.border-legendary { border-color: hsl(var(--rarity-legendary) / 0.5); }
+
+.text-common { color: hsl(var(--rarity-common)); }
+.text-rare { color: hsl(var(--rarity-rare)); }
+.text-epic { color: hsl(var(--rarity-epic)); }
+.text-legendary { color: hsl(var(--rarity-legendary)); }
+.text-legendary-glow { color: hsl(var(--rarity-legendary)); text-shadow: 0 0 10px hsl(var(--rarity-legendary)); }
+
+.shadow-legendary { box-shadow: 0 0 25px hsl(var(--rarity-legendary) / 0.3); }
+.shadow-epic { box-shadow: 0 0 20px hsl(var(--rarity-epic) / 0.2); }
+.shadow-rare { box-shadow: 0 0 15px hsl(var(--rarity-rare) / 0.15); }
+
+/* Pixel Art Animations */
+@keyframes epic-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-epic-idle { animation: epic-idle 2s ease-in-out infinite; }
+
+@keyframes legendary-idle {
+  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 2px hsl(var(--rarity-legendary))); }
+  50% { transform: translateY(-4px); filter: drop-shadow(0 0 10px hsl(var(--rarity-legendary))); }
+}
+.animate-legendary-idle { animation: legendary-idle 1.5s ease-in-out infinite; }
+
+/* Pack Opening Animations */
+@keyframes pack-shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-2deg); }
+  20%, 40%, 60%, 80% { transform: translateX(5px) rotate(2deg); }
+}
+.animate-pack-shake { animation: pack-shake 1.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+@keyframes card-flip {
+  0% { transform: scale(0.8) rotateY(90deg) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) rotateY(0deg) translateY(0); opacity: 1; }
+}
+.animate-card-flip { animation: card-flip 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+.reveal-common { animation: card-flip 0.5s forwards; }
+.reveal-rare { animation: card-flip 0.5s forwards; box-shadow: 0 0 20px hsl(var(--rarity-rare)); }
+.reveal-epic { animation: card-flip 0.5s forwards, epic-pulse 1s infinite alternate; }
+.reveal-legendary { animation: card-flip 0.5s forwards, legendary-pulse 1s infinite alternate; }
+
+@keyframes epic-pulse {
+  0% { box-shadow: 0 0 10px hsl(var(--rarity-epic)); transform: scale(1); }
+  100% { box-shadow: 0 0 30px hsl(var(--rarity-epic)); transform: scale(1.02); }
+}
+@keyframes legendary-pulse {
+  0% { box-shadow: 0 0 15px hsl(var(--rarity-legendary)); transform: scale(1); }
+  100% { box-shadow: 0 0 40px hsl(var(--rarity-legendary)); transform: scale(1.05); }
+}
+
+@keyframes screen-flash {
+  0% { opacity: 0; }
+  10% { opacity: 0.2; }
+  100% { opacity: 0; }
+}
+.animate-screen-flash { animation: screen-flash 1.5s ease-out forwards; }
+
+/* Battle animations */
+@keyframes battle-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.animate-battle-shake { animation: battle-shake 0.4s ease-in-out; }
+
+@keyframes float-up {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-48px) scale(1.3); }
+}
+.animate-float-up { animation: float-up 0.8s ease-out forwards; }
+
+@keyframes screen-flash {
+  0% { opacity: 0; }
+  20% { opacity: 0.35; }
+  100% { opacity: 0; }
+}
+.animate-screen-flash { animation: screen-flash 0.5s ease-out forwards; }
+
+@keyframes battle-enter {
+  0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-battle-enter { animation: battle-enter 0.3s ease-out forwards; }
+
+.type-glow-fire     { filter: drop-shadow(0 0 12px #ef4444); }
+.type-glow-water    { filter: drop-shadow(0 0 12px #3b82f6); }
+.type-glow-nature   { filter: drop-shadow(0 0 12px #22c55e); }
+.type-glow-shadow   { filter: drop-shadow(0 0 12px #8b5cf6); }
+.type-glow-light    { filter: drop-shadow(0 0 12px #eab308); }
+.type-glow-electric { filter: drop-shadow(0 0 12px #06b6d4); }
+.type-glow-stone    { filter: drop-shadow(0 0 12px #78716c); }
+
+.type-bg-fire     { background-color: #ef444422; border-color: #ef444440; }
+.type-bg-water    { background-color: #3b82f622; border-color: #3b82f640; }
+.type-bg-nature   { background-color: #22c55e22; border-color: #22c55e40; }
+.type-bg-shadow   { background-color: #8b5cf622; border-color: #8b5cf640; }
+.type-bg-light    { background-color: #eab30822; border-color: #eab30840; }
+.type-bg-electric { background-color: #06b6d422; border-color: #06b6d440; }
+.type-bg-stone    { background-color: #78716c22; border-color: #78716c40; }
+
+/* Ultimate button ready pulse */
+@keyframes ulti-ready {
+  0%, 100% { box-shadow: 0 0 8px #f59e0b66; }
+  50%       { box-shadow: 0 0 24px #f59e0bcc, 0 0 48px #f59e0b44; }
+}
+.animate-ulti-ready { animation: ulti-ready 1.2s ease-in-out infinite; }
+
+/* Ultimate activation pulse on sprite */
+@keyframes ulti-pulse {
+  0%, 100% { filter: brightness(1); }
+  50%       { filter: brightness(1.6) saturate(2); }
+}
+.animate-ulti-pulse { animation: ulti-pulse 0.4s ease-in-out 3; }
+
+/* Energy bar glow when full */
+@keyframes energy-full {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+
+/* Rarity aura animations for cards */
+@keyframes epic-aura {
+  0%, 100% { box-shadow: 0 0 12px hsl(var(--rarity-epic) / 0.4), inset 0 0 12px hsl(var(--rarity-epic) / 0.05); }
+  50%       { box-shadow: 0 0 28px hsl(var(--rarity-epic) / 0.6), inset 0 0 20px hsl(var(--rarity-epic) / 0.1); }
+}
+@keyframes legendary-aura {
+  0%, 100% { box-shadow: 0 0 16px hsl(var(--rarity-legendary) / 0.5), inset 0 0 16px hsl(var(--rarity-legendary) / 0.08); }
+  50%       { box-shadow: 0 0 40px hsl(var(--rarity-legendary) / 0.8), inset 0 0 24px hsl(var(--rarity-legendary) / 0.15); }
+}
+.animate-epic-aura      { animation: epic-aura 2s ease-in-out infinite; }
+.animate-legendary-aura { animation: legendary-aura 1.5s ease-in-out infinite; }

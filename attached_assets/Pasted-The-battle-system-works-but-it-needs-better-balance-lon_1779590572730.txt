@@ -1,0 +1,130 @@
+The battle system works, but it needs better balance, longer fights, and better creature art.
+
+PART 1 — Make battles longer and more strategic
+Current battles end too quickly. Rebalance combat so a normal 3v3 battle lasts around 8–15 turns.
+
+Change damage formula:
+- Current formula is too high.
+- New formula:
+  damage = max(4, round((attack * 0.65) - (defense * 0.25)))
+  then apply type multiplier.
+- Type advantage should be 1.2x instead of 1.25x.
+- Type disadvantage should be 0.85x instead of 0.8x.
+- Critical hits should be rare: 8% chance, 1.35x damage.
+
+Increase effective HP:
+- Increase all creature HP by about 35–50%.
+- Do not increase attack as much.
+- Tanks should feel tanky, speedsters should not instantly delete enemies.
+
+Add energy system:
+- Every active creature has Energy from 0 to 100.
+- Basic Attack gives +25 energy.
+- Defend gives +35 energy.
+- Skill costs 60 energy instead of using only cooldown.
+- Ultimate costs 100 energy and is only available for Epic/Legendary creatures.
+- This makes players plan turns instead of spamming skills.
+
+Add meaningful action choices:
+Attack:
+- medium damage, builds energy.
+
+Defend:
+- reduces incoming damage by 50%.
+- clears one negative status effect if the creature has one.
+- builds extra energy.
+
+Skill:
+- costs 60 energy.
+- stronger than attack.
+- applies type effect.
+- cannot be used unless enough energy.
+
+Ultimate:
+- Epic and Legendary only.
+- costs 100 energy.
+- big effect but not instant win.
+- add strong animation.
+
+Swap:
+- Swap should consume the turn, but the incoming creature gets 20 energy.
+- AI should swap less often so battles do not feel annoying.
+
+Status effect balance:
+- Burn should deal 5% max HP per turn for 3 turns.
+- Regen should heal 6% max HP per turn for 3 turns.
+- Stun should only last 1 turn and have a 35% application chance, not guaranteed.
+- Shield should reduce incoming damage by 35%, not 50%, unless defending.
+
+Enemy AI improvements:
+- Enemy should not always make perfect choices.
+- Add simple difficulty levels:
+  Easy: random-ish choices
+  Normal: decent choices
+  Hard: smarter choices
+- Default to Normal.
+- Normal AI should sometimes attack even if skill is available.
+
+Rewards:
+- Give XP based on battle length and creatures defeated.
+- Give bonus coins for winning with all 3 creatures alive.
+
+PART 2 — Better creature visuals, Core Keeper inspired
+The creatures still look like pixel blobs. Upgrade them to detailed pixel-art-style sprites inspired by Core Keeper/Terraria/Stardew style, but original.
+
+Important:
+- Do not copy Core Keeper assets.
+- Create original CSS/SVG pixel-art creatures with more details.
+
+Each creature sprite should have:
+- distinct silhouette
+- visible head/body
+- eyes
+- arms/claws/fins/wings/horns/tail depending on type
+- shading/highlights
+- 2–3 color tones
+- rarity glow/frame
+- idle animation
+- attack animation
+- hurt animation
+- faint shadow under the creature
+
+Create at least 14 reusable creature body templates:
+1. Fire lizard with horns and flame tail
+2. Water turtle/crab hybrid with shell
+3. Nature deer/plant creature with leaf antlers
+4. Electric fox with lightning tail
+5. Stone golem with chunky arms
+6. Shadow bat/wolf with purple eyes
+7. Light bird/angel creature with glow
+8. Frost serpent
+9. Mushroom creature
+10. Lava beetle
+11. Crystal spider
+12. Thunder bird
+13. Mystic cat
+14. Ancient dragon mini
+
+Use SVG or CSS pixel-art components. No external images.
+
+Improve card display:
+- Cards should show the creature sprite large at the top, not a letter.
+- Background color should match type.
+- Epic/Legendary should have animated aura.
+- Legendary should have a more dramatic idle effect.
+
+PART 3 — Battle presentation
+Improve the battle screen visuals:
+- larger arena area
+- enemy at top, player at bottom
+- HP and Energy bars
+- action buttons at bottom
+- floating damage/heal/status text
+- show type advantage hints before selecting a move
+- show active status effects as small icons
+- add short delay between enemy actions so battles feel animated, not instant
+
+After implementing:
+- Run TypeScript/typecheck.
+- Fix all errors.
+- Take screenshots of inventory, pack opening, creature detail, and battle screen.
